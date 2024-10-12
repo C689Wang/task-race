@@ -1,0 +1,40 @@
+datasource db {
+    url      = env("DATABASE_URL")
+    provider = "postgresql"
+}
+
+generator client {
+    provider = "prisma-client-js"
+}
+
+model Player {
+    id               String  @id
+    score            Int?
+    profilePhoto     String?
+    qrCodeId         String?
+    qrCode           QRCode?  @relation(fields: [qrCodeId], references: [id], onDelete: Cascade)
+    initiatedBattles Race[]  @relation("Player1")
+    invitedToBattles Race[]  @relation("Player2")
+}
+
+model Race {
+    id           String      @id @default(cuid())
+    playerOneID  String
+    playerTwoID  String
+    winner       WinnerEnum?
+    winningPhoto String?
+    playerOne    Player      @relation("Player1", fields: [playerOneID], references: [id])
+    playerTwo    Player      @relation("Player2", fields: [playerTwoID], references: [id])
+}
+
+enum WinnerEnum {
+    PLAYER1
+    PLAYER2
+}
+
+model QRCode {
+    id       String @id
+    encoding String
+
+    Player Player[]
+}
