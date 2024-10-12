@@ -19,3 +19,22 @@ export async function POST(request: NextRequest) {
     );
   }
 }
+
+export async function GET(request: NextRequest) {
+  try {
+    const topPlayers = await prisma.player.findMany({
+      orderBy: { score: 'desc' },
+      include: {
+        _count: { select: { initiatedBattles: true, invitedToBattles: true } },
+      },
+    });
+
+    return Response.json(topPlayers);
+  } catch (error) {
+    console.error(error);
+    return Response.json(
+      { message: 'Failed to fetch winning players' },
+      { status: 500 }
+    );
+  }
+}
