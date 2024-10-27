@@ -1,13 +1,15 @@
 import { nanoid } from 'nanoid';
 import prisma from '../../../../utils/db';
 import { NextRequest } from 'next/server';
+import { CreateUserPayload } from '@/models/user';
 
 export async function POST(request: NextRequest) {
-  //   const body = JSON.parse(request.body);
+  const body: CreateUserPayload = await request.json();
   try {
     const player = await prisma.player.create({
       data: {
         id: nanoid(),
+        profilePhoto: body.profilePhoto,
       },
     });
     return Response.json(player);
