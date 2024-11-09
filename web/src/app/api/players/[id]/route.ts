@@ -11,6 +11,9 @@ export async function GET(
       where: {
         id,
       },
+      include: {
+        qrCode: true,
+      },
     });
     if (!player) {
       return Response.json({ message: 'Player not found' }, { status: 404 });
