@@ -89,7 +89,7 @@ const LandingComponent: React.FC<LandingComponentProps> = ({
       return (
         <p className="border-b border-gray-300 dark:border-neutral-800 dark:from-inherit w-auto rounded-xl border bg-gray-200 p-4 dark:bg-zinc-800/30">
           You are ready to go! Scan somebody else&apos;s QR code to initiate a
-          battle
+          race
         </p>
       );
     } else {
