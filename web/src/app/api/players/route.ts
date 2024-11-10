@@ -6,10 +6,20 @@ import { CreateUserPayload } from '@/models/user';
 export async function POST(request: NextRequest) {
   const body: CreateUserPayload = await request.json();
   try {
+    const playerId = nanoid();
+    const qrId = nanoid();
+    await prisma.qRCode.create({
+      data: {
+        id: qrId,
+        encoding: playerId,
+      },
+    });
+
     const player = await prisma.player.create({
       data: {
-        id: nanoid(),
+        id: playerId,
         profilePhoto: body.profilePhoto,
+        qrCodeId: qrId,
       },
     });
     return Response.json(player);

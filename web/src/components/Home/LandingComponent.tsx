@@ -1,10 +1,10 @@
-import { Scanner } from '@yudiel/react-qr-scanner';
-import Link from 'next/link';
+import { IDetectedBarcode, Scanner } from '@yudiel/react-qr-scanner';
 import Image from 'next/image';
+import Link from 'next/link';
 import React, { Dispatch, RefObject, SetStateAction } from 'react';
 import Webcam from 'react-webcam';
 
-type HomeProps = {
+type LandingComponentProps = {
   isNewUser: boolean;
   setIsNewUser: Dispatch<SetStateAction<boolean>>;
   user: string | undefined;
@@ -13,9 +13,10 @@ type HomeProps = {
   captureImage: () => void;
   retakeImage: () => void;
   createUser: (image: string) => Promise<void>;
+  sendMessage: (message: string) => void;
 };
 
-const LandingComponent: React.FC<HomeProps> = ({
+const LandingComponent: React.FC<LandingComponentProps> = ({
   isNewUser,
   setIsNewUser,
   user,
@@ -24,7 +25,26 @@ const LandingComponent: React.FC<HomeProps> = ({
   captureImage,
   retakeImage,
   createUser,
+  sendMessage,
 }) => {
+  const processQrCode = (result: IDetectedBarcode[]) => {
+    if (result.length == 0) {
+      return;
+    } else {
+      const first = result[0];
+      const value = first.rawValue;
+      if (value !== user) {
+        sendMessage(
+          JSON.stringify({
+            Action: 'initiate_request',
+            Origin: user,
+            Target: value,
+          })
+        );
+      }
+    }
+  };
+
   const renderCameraComponent = () => {
     if (image) {
       return (
@@ -63,11 +83,17 @@ const LandingComponent: React.FC<HomeProps> = ({
       );
     }
   };
-  return (
-    <main
-      className={`flex min-h-screen flex-col items-center justify-between py-12 px-6`}
-    >
-      <div className="flex justify-center z-10 max-w-5xl w-full items-center lg:justify-between font-mono text-sm">
+
+  const renderTextComponent = () => {
+    if (user) {
+      return (
+        <p className="border-b border-gray-300 dark:border-neutral-800 dark:from-inherit w-auto rounded-xl border bg-gray-200 p-4 dark:bg-zinc-800/30">
+          You are ready to go! Scan somebody else&apos;s QR code to initiate a
+          race
+        </p>
+      );
+    } else {
+      return (
         <p className="border-b border-gray-300 dark:border-neutral-800 dark:from-inherit w-auto rounded-xl border bg-gray-200 p-4 dark:bg-zinc-800/30">
           Get started by taking a selfie! Or click{' '}
           <a
@@ -78,12 +104,22 @@ const LandingComponent: React.FC<HomeProps> = ({
           </a>{' '}
           if you already have a QR code!
         </p>
+      );
+    }
+  };
+
+  return (
+    <main
+      className={`flex min-h-screen flex-col items-center justify-between py-12 px-6`}
+    >
+      <div className="flex justify-center z-10 max-w-5xl w-full items-center lg:justify-between font-mono text-sm">
+        {renderTextComponent()}
         <div
           className="fixed bottom-0 left-0 flex h-12 w-full items-end justify-center bg-gradient-to-t from-white via-white dark:from-black dark:via-black lg:static lg:h-auto lg:w-auto lg:bg-none pb-8 md:pb-0 bold"
           style={{ gap: '16px' }}
         >
           {user && (
-            <Link href="/QR" className="underline hover:text-purple-400">
+            <Link href="/qr" className="underline hover:text-purple-400">
               My QR
             </Link>
           )}
@@ -95,11 +131,13 @@ const LandingComponent: React.FC<HomeProps> = ({
           </Link>
         </div>
       </div>
-      {isNewUser ? (
+      {isNewUser && !user ? (
         renderCameraComponent()
       ) : (
         <Scanner
-          onScan={() => {}}
+          onScan={result => {
+            processQrCode(result);
+          }}
           styles={{
             container: {
               maxWidth: 500,
