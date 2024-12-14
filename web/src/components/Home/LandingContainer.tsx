@@ -6,9 +6,8 @@ import React, {
   useState,
 } from 'react';
 import Webcam from 'react-webcam';
-import LandingComponent from './LandingComponent';
 import RaceModal from '../modals/RaceModal/RaceModal';
-import AcceptModal from '../modals/AcceptModal/AcceptModal';
+import LandingComponent from './LandingComponent';
 
 type HomeProps = {
   isNewUser: boolean;
@@ -36,15 +35,12 @@ const LandingContainer: React.FC<HomeProps> = ({
   message,
 }) => {
   const [isOpen, setIsOpen] = useState<boolean>(false);
-  const [isAccept, setIsAccept] = useState<boolean>(false);
 
   useEffect(() => {
     if (message) {
       const event = JSON.parse(message);
       if (event.Action === 'race_created') {
         setIsOpen(true);
-      } else if (event.Action === 'race_sent') {
-        setIsAccept(true);
       }
     }
   }, [message]);
@@ -62,11 +58,11 @@ const LandingContainer: React.FC<HomeProps> = ({
         createUser={createUser}
         sendMessage={sendMessage}
       />
-      <RaceModal isOpen={isOpen} onClose={() => {}} />
-      <AcceptModal
-        isVisible={isAccept}
-        onAccept={() => {}}
-        onDecline={() => {}}
+      <RaceModal
+        isOpen={isOpen}
+        onClose={() => {
+          setIsOpen(false);
+        }}
       />
     </>
   );

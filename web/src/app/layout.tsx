@@ -1,7 +1,8 @@
 import type { Metadata } from 'next';
 import localFont from 'next/font/local';
 import './globals.css';
-import { WebSocketProvider } from '@/context/websocketContext';
+import { WebSocketProvider } from '@/context/WebsocketContext';
+import { NotificationProvider } from '@/context/NotificationProvider';
 
 const geistSans = localFont({
   src: './fonts/GeistVF.woff',
@@ -29,7 +30,9 @@ export default function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
-        <WebSocketProvider>{children}</WebSocketProvider>
+        <WebSocketProvider>
+          <NotificationProvider>{children}</NotificationProvider>
+        </WebSocketProvider>
       </body>
     </html>
   );
