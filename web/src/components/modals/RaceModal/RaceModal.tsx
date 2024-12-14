@@ -1,11 +1,11 @@
 import React from 'react';
 
-interface BattleModalProps {
+interface RaceModalProps {
   isOpen: boolean;
   onClose: () => void;
 }
 
-const RaceModal: React.FC<BattleModalProps> = ({ isOpen, onClose }) => {
+const RaceModal: React.FC<RaceModalProps> = ({ isOpen, onClose }) => {
   if (!isOpen) return null;
 
   return (

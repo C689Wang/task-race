@@ -1,9 +1,9 @@
 'use client';
 import LandingContainer from '@/components/Home/LandingContainer';
-import { WebSocketContext } from '@/context/websocketContext';
+import { useWebsocket } from '@/context/WebsocketContext';
 import { upload } from '@vercel/blob/client';
 import { nanoid } from 'nanoid';
-import { useCallback, useContext, useRef, useState } from 'react';
+import { useCallback, useRef, useState } from 'react';
 import Webcam from 'react-webcam';
 import useLocalStorageState from 'use-local-storage-state';
 
@@ -13,8 +13,6 @@ export default function Home() {
   const [isNewUser, setIsNewUser] = useState<boolean>(true);
   const webcamRef = useRef<Webcam>(null);
   const [image, setImage] = useState<string | null>(null);
-
-  const websocketContext = useContext(WebSocketContext);
 
   const captureImage = useCallback(async () => {
     const imageSrc = webcamRef.current?.getScreenshot();
@@ -45,9 +43,9 @@ export default function Home() {
     setUser(userData.id);
   };
 
-  if (!websocketContext) return <div>Loading...</div>;
+  const { message, sendMessage, loading } = useWebsocket();
 
-  const { message, sendMessage } = websocketContext;
+  if (loading) return <div>Loading...</div>;
 
   return (
     <LandingContainer

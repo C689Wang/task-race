@@ -1,5 +1,12 @@
 'use client';
-import { createContext, useEffect, useState, ReactNode, useRef } from 'react';
+import {
+  createContext,
+  useEffect,
+  useState,
+  ReactNode,
+  useRef,
+  useContext,
+} from 'react';
 import WebSocketService from '../lib/websocketService';
 import useLocalStorageState from 'use-local-storage-state';
 
@@ -8,7 +15,7 @@ interface WebSocketContextType {
   sendMessage: (message: string) => void;
 }
 
-export const WebSocketContext = createContext<WebSocketContextType | undefined>(
+const WebSocketContext = createContext<WebSocketContextType | undefined>(
   undefined
 );
 
@@ -71,4 +78,20 @@ export const WebSocketProvider = ({ children }: { children: ReactNode }) => {
       {children}
     </WebSocketContext.Provider>
   );
+};
+
+export const useWebsocket = () => {
+  const websocketContext = useContext(WebSocketContext);
+  if (!websocketContext) {
+    return {
+      message: '',
+      loading: true,
+      sendMessage: () => {},
+    };
+  } else {
+    return {
+      ...websocketContext,
+      loading: false,
+    };
+  }
 };
