@@ -225,7 +225,7 @@ func (s *Server) initiateRequest(conn net.Conn, ctx context.Context, raceEvent R
 
 		s.sendMessage(conn, RaceEvent{
 			Action: "race_created",
-			Origin: *raceEvent.Target,
+			Origin: raceEvent.Origin,
 			Target: &player.ID,
 			Race: &race.ID,
 		})

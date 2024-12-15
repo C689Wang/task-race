@@ -58,6 +58,9 @@ func (h *Hub) Broadcast(raceId string, raceEvent RaceEvent) {
 		log.Println("Error marshalling message:", err)
 		return
 	}
+	if _, ok := h.hub[raceId]; !ok {
+		return
+	}
 	for _, client := range h.hub[raceId].clients {
 		err := wsutil.WriteServerMessage(*client.conn, ws.OpText, msg)
 		if err != nil {
