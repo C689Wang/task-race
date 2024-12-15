@@ -225,7 +225,7 @@ func (s *Server) initiateRequest(conn net.Conn, ctx context.Context, raceEvent R
 
 		s.sendMessage(conn, RaceEvent{
 			Action: "race_created",
-			Origin: *raceEvent.Target,
+			Origin: raceEvent.Origin,
 			Target: &player.ID,
 			Race: &race.ID,
 		})
@@ -284,6 +284,12 @@ func (s *Server) handleSubmission(ctx context.Context, raceEvent RaceEvent) {
 		log.Println("Error fetching race:", err)
 		return
 	}
+
+    if race.InnerRace.Winner != nil {
+		log.Println("Winner already exists")
+		return
+	}
+
 	var winner db.WinnerEnum
 	winner = "PLAYER1"
 	if race.PlayerTwoID == raceEvent.Origin {
@@ -312,6 +318,7 @@ func (s *Server) handleSubmission(ctx context.Context, raceEvent RaceEvent) {
 	}
 
 	s.hub.Broadcast(*raceEvent.Race, RaceEvent{
+		Action: "race_ended",
 		Origin: raceEvent.Origin,
 		Target: raceEvent.Target,
 		Race: raceEvent.Race,
@@ -320,6 +327,9 @@ func (s *Server) handleSubmission(ctx context.Context, raceEvent RaceEvent) {
 }
 
 func (s *Server) handleLeaveRace(raceEvent RaceEvent) {
+	if _, ok := s.clientHub[*raceEvent.Race]; !ok {
+		return
+	}
 	raceId := s.clientHub[*raceEvent.Race].raceId
 	if raceId != nil {
 		s.hub.DeleteRace(raceId)

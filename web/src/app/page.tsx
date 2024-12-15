@@ -8,7 +8,6 @@ import Webcam from 'react-webcam';
 import useLocalStorageState from 'use-local-storage-state';
 
 export default function Home() {
-  // const [user, setUser] = useState<string>();
   const [user, setUser] = useLocalStorageState<string>('user');
   const [isNewUser, setIsNewUser] = useState<boolean>(true);
   const webcamRef = useRef<Webcam>(null);

@@ -1,12 +1,5 @@
-import React, {
-  Dispatch,
-  RefObject,
-  SetStateAction,
-  useEffect,
-  useState,
-} from 'react';
+import React, { Dispatch, RefObject, SetStateAction } from 'react';
 import Webcam from 'react-webcam';
-import RaceModal from '../modals/RaceModal/RaceModal';
 import LandingComponent from './LandingComponent';
 
 type HomeProps = {
@@ -32,39 +25,19 @@ const LandingContainer: React.FC<HomeProps> = ({
   retakeImage,
   createUser,
   sendMessage,
-  message,
 }) => {
-  const [isOpen, setIsOpen] = useState<boolean>(false);
-
-  useEffect(() => {
-    if (message) {
-      const event = JSON.parse(message);
-      if (event.Action === 'race_created') {
-        setIsOpen(true);
-      }
-    }
-  }, [message]);
-
   return (
-    <>
-      <LandingComponent
-        isNewUser={isNewUser}
-        setIsNewUser={setIsNewUser}
-        user={user}
-        webcamRef={webcamRef}
-        image={image}
-        captureImage={captureImage}
-        retakeImage={retakeImage}
-        createUser={createUser}
-        sendMessage={sendMessage}
-      />
-      <RaceModal
-        isOpen={isOpen}
-        onClose={() => {
-          setIsOpen(false);
-        }}
-      />
-    </>
+    <LandingComponent
+      isNewUser={isNewUser}
+      setIsNewUser={setIsNewUser}
+      user={user}
+      webcamRef={webcamRef}
+      image={image}
+      captureImage={captureImage}
+      retakeImage={retakeImage}
+      createUser={createUser}
+      sendMessage={sendMessage}
+    />
   );
 };
 export default LandingContainer;
