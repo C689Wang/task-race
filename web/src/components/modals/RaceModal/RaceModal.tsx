@@ -1,12 +1,14 @@
-import React, { useCallback, useRef, useState } from 'react';
-import Image from 'next/image';
-import Webcam from 'react-webcam';
 import Spinner from '@/components/common/Spinner';
+import Image from 'next/image';
+import React, { useCallback, useRef, useState } from 'react';
+import Webcam from 'react-webcam';
 
 interface RaceModalProps {
   isOpen: boolean;
   onClose: () => void;
   view: 'Lobby' | 'Game';
+  loading: boolean;
+  handleSubmit: (image: string) => void;
   prompt?: string;
 }
 
@@ -14,15 +16,12 @@ const RaceModal: React.FC<RaceModalProps> = ({
   isOpen,
   onClose,
   view,
+  loading,
+  handleSubmit,
   prompt,
 }) => {
   const [image, setImage] = useState<string | null>(null);
-  const [loading, setLoading] = useState<boolean>(false);
   const webcamRef = useRef<Webcam>(null);
-
-  const handleSubmit = () => {
-    setLoading(true);
-  };
 
   const captureImage = useCallback(async () => {
     const imageSrc = webcamRef.current?.getScreenshot();
@@ -53,9 +52,7 @@ const RaceModal: React.FC<RaceModalProps> = ({
         </div>
       ) : (
         <div className="w-full max-w-md bg-gray-800 text-gray-300 rounded-lg shadow-lg p-6">
-          <h2 className="text-xl font-bold mb-4 text-center">
-            Your Race Prompt
-          </h2>
+          <h2 className="text-xl font-bold mb-4 text-center">Race Prompt</h2>
           <p className="text-center mb-6">{prompt}</p>
 
           {image ? (
@@ -82,7 +79,7 @@ const RaceModal: React.FC<RaceModalProps> = ({
                   Retake
                 </button>
                 <button
-                  onClick={handleSubmit}
+                  onClick={() => handleSubmit(image)}
                   className="px-4 py-2 bg-blue-600 hover:bg-blue-500 text-white rounded transition"
                 >
                   Submit

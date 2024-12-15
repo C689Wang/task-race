@@ -147,6 +147,7 @@ const LandingComponent: React.FC<LandingComponentProps> = ({
               margin: 24,
             },
           }}
+          allowMultiple={true}
         />
       )}
     </main>

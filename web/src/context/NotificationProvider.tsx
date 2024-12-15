@@ -5,6 +5,8 @@ import useLocalStorageState from 'use-local-storage-state';
 import AcceptModal from '../components/modals/AcceptModal/AcceptModal';
 import { useWebsocket } from './WebsocketContext';
 import RaceModal from '@/components/modals/RaceModal/RaceModal';
+import { upload } from '@vercel/blob/client';
+import WinnerModal from '@/components/modals/WinnerModal/WinnerModal';
 
 interface Notification {
   id: string;
@@ -22,6 +24,15 @@ export const NotificationProvider: React.FC<{ children: ReactNode }> = ({
   const [user] = useLocalStorageState<string>('user');
   const [view, setView] = useState<'Lobby' | 'Game'>('Lobby');
   const [prompt, setPrompt] = useState<string>('');
+  const [raceLoading, setRaceLoading] = useState<boolean>(false);
+  const [isWinnerModalOpen, setIsWinnerModalOpen] = useState<boolean>(false);
+  const [winningRace, setWinningRace] = useState<{
+    winner: string;
+    winningPhoto: string;
+  }>({
+    winner: '',
+    winningPhoto: '',
+  });
 
   const { message, sendMessage } = useWebsocket();
 
@@ -50,6 +61,26 @@ export const NotificationProvider: React.FC<{ children: ReactNode }> = ({
         prev.filter(notification => notification.id !== id)
       );
     }, 20000);
+  };
+
+  const handleSubmit = async (image: string) => {
+    setRaceLoading(true);
+    const base64Response = await fetch(image);
+    const blob = await base64Response.blob();
+    const winningPhoto = await upload(`winning-race-${nanoid()}.png`, blob, {
+      access: 'public',
+      handleUploadUrl: '/api/upload',
+    });
+    sendMessage(
+      JSON.stringify({
+        Action: 'submission',
+        Origin: user,
+        Target: currentOpponent,
+        Race: currentRace,
+        WinningPhoto: winningPhoto.url,
+      })
+    );
+    setRaceLoading(false);
   };
 
   const leaveRace = () => {
@@ -85,6 +116,14 @@ export const NotificationProvider: React.FC<{ children: ReactNode }> = ({
         setCurrentRace(event.Race);
         setView('Game');
         setPrompt(event.Prompt);
+      } else if (event.Action === 'race_ended') {
+        setIsRaceModalOpen(false);
+        setView('Lobby');
+        setIsWinnerModalOpen(true);
+        setWinningRace({
+          winner: event.Origin,
+          winningPhoto: event.WinningPhoto,
+        });
       }
     }
   }, [message]);
@@ -92,10 +131,18 @@ export const NotificationProvider: React.FC<{ children: ReactNode }> = ({
   return (
     <>
       {children}
+      <WinnerModal
+        isOpen={isWinnerModalOpen}
+        onClose={() => setIsWinnerModalOpen(false)}
+        hasWon={winningRace.winner === user}
+        winningPhoto={winningRace.winningPhoto}
+      />
       <RaceModal
         isOpen={isRaceModalOpen}
         onClose={() => leaveRace()}
         view={view}
+        loading={raceLoading}
+        handleSubmit={handleSubmit}
         prompt={prompt}
       />
       <div className="fixed flex top-4 w-full flex-col justify-center items-center z-50">
