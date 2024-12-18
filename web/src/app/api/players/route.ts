@@ -36,6 +36,7 @@ export async function GET(request: NextRequest) {
   try {
     const topPlayers = await prisma.player.findMany({
       orderBy: { score: 'desc' },
+      where: { score: { not: null } },
       include: {
         _count: { select: { initiatedBattles: true, invitedToBattles: true } },
       },

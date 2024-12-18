@@ -131,20 +131,22 @@ export const NotificationProvider: React.FC<{ children: ReactNode }> = ({
   return (
     <>
       {children}
-      <WinnerModal
-        isOpen={isWinnerModalOpen}
-        onClose={() => setIsWinnerModalOpen(false)}
-        hasWon={winningRace.winner === user}
-        winningPhoto={winningRace.winningPhoto}
-      />
-      <RaceModal
-        isOpen={isRaceModalOpen}
-        onClose={() => leaveRace()}
-        view={view}
-        loading={raceLoading}
-        handleSubmit={handleSubmit}
-        prompt={prompt}
-      />
+      {isWinnerModalOpen && (
+        <WinnerModal
+          onClose={() => setIsWinnerModalOpen(false)}
+          hasWon={winningRace.winner === user}
+          winningPhoto={winningRace.winningPhoto}
+        />
+      )}
+      {isRaceModalOpen && (
+        <RaceModal
+          onClose={() => leaveRace()}
+          view={view}
+          loading={raceLoading}
+          handleSubmit={handleSubmit}
+          prompt={prompt}
+        />
+      )}
       <div className="fixed flex top-4 w-full flex-col justify-center items-center z-50">
         {notifications.map(notification => (
           <AcceptModal
