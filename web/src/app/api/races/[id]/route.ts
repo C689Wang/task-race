@@ -9,26 +9,28 @@ export async function GET(
   try {
     const races = await prisma.race.findMany({
       where: {
+        winningPhoto: {
+          not: null,
+        },
         OR: [
           {
-            AND: [
-              { playerOneID: id as string },
-              { winner: WinnerEnum.PLAYER1 },
-            ],
+            playerOneID: id,
+            winner: WinnerEnum.PLAYER1,
           },
           {
-            AND: [
-              { playerTwoID: id as string },
-              { winner: WinnerEnum.PLAYER2 },
-            ],
+            playerTwoID: id,
+            winner: WinnerEnum.PLAYER2,
           },
         ],
+      },
+      select: {
+        winningPhoto: true,
       },
     });
 
     return Response.json({ data: races });
   } catch (error) {
-    console.error(error);
+    console.error('Error in GET /api/races/[id]:', error);
     return Response.json(
       { message: 'Error finding races for player' },
       { status: 500 }

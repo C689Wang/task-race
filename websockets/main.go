@@ -307,10 +307,26 @@ func (s *Server) handleSubmission(ctx context.Context, raceEvent RaceEvent) {
 		log.Println("Error updating race with winner:", err)
 	}
 
+	player, err := s.client.Player.FindUnique(
+		db.Player.ID.Equals(raceEvent.Origin),
+	).Exec(ctx)
+
+	if err != nil {
+		log.Println("Error finding player:", err)
+		return
+	}
+
+	var updatedScore int
+	if player.InnerPlayer.Score == nil {
+		updatedScore = 1
+	} else {
+		updatedScore = *player.InnerPlayer.Score + 1
+	}
+
 	_, err = s.client.Player.FindUnique(
 		db.Player.ID.Equals(raceEvent.Origin),
 	).Update(
-		db.Player.Score.Increment(1),
+		db.Player.Score.Set(updatedScore),
 	).Exec(ctx)
 
 	if err != nil {

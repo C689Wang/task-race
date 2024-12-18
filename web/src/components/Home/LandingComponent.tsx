@@ -3,6 +3,7 @@ import Image from 'next/image';
 import Link from 'next/link';
 import React, { Dispatch, RefObject, SetStateAction } from 'react';
 import Webcam from 'react-webcam';
+import Spinner from '../common/Spinner';
 
 type LandingComponentProps = {
   isNewUser: boolean;
@@ -14,6 +15,7 @@ type LandingComponentProps = {
   retakeImage: () => void;
   createUser: (image: string) => Promise<void>;
   sendMessage: (message: string) => void;
+  submitLoading: boolean;
 };
 
 const LandingComponent: React.FC<LandingComponentProps> = ({
@@ -26,6 +28,7 @@ const LandingComponent: React.FC<LandingComponentProps> = ({
   retakeImage,
   createUser,
   sendMessage,
+  submitLoading,
 }) => {
   const processQrCode = (result: IDetectedBarcode[]) => {
     if (result.length == 0) {
@@ -49,7 +52,19 @@ const LandingComponent: React.FC<LandingComponentProps> = ({
     if (image) {
       return (
         <div className="mb-10 flex flex-col justify-center items-center gap-2 md:mb-0">
-          <Image width={500} height={500} src={image || ''} alt="Taken photo" />
+          {submitLoading ? (
+            <>
+              <p className="text-white mt-6">Submitting Image...</p>
+              <Spinner />
+            </>
+          ) : (
+            <Image
+              width={500}
+              height={500}
+              src={image || ''}
+              alt="Taken photo"
+            />
+          )}
           <div
             className="w-64 flex w-auto justify-between"
             style={{ gap: '16px' }}
@@ -57,12 +72,14 @@ const LandingComponent: React.FC<LandingComponentProps> = ({
             <button
               className="bg-blue-500 w-32 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
               onClick={() => createUser(image)}
+              disabled={submitLoading}
             >
               Submit
             </button>
             <button
               className="bg-blue-500 w-32 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
               onClick={() => retakeImage()}
+              disabled={submitLoading}
             >
               Retake
             </button>

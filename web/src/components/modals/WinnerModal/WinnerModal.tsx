@@ -2,14 +2,12 @@ import Image from 'next/image';
 import React from 'react';
 
 interface WinnerModalProps {
-  isOpen: boolean;
   onClose: () => void;
   hasWon: boolean;
   winningPhoto: string;
 }
 
 const WinnerModal: React.FC<WinnerModalProps> = ({
-  isOpen,
   onClose,
   hasWon,
   winningPhoto,
@@ -21,8 +19,6 @@ const WinnerModal: React.FC<WinnerModalProps> = ({
       return 'You lost this time! Better luck next time.';
     }
   };
-
-  if (!isOpen) return null;
 
   return (
     <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-70 z-50">

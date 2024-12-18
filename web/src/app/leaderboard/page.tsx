@@ -1,4 +1,7 @@
 'use client';
+import Error from '@/components/common/Error';
+import Loading from '@/components/common/Loading';
+import Navbar from '@/components/Navbar/Navbar';
 import React from 'react';
 import useSWR from 'swr';
 
@@ -16,14 +19,15 @@ const LeaderboardPage = ({ initialData }: { initialData: Person[] }) => {
     { fallbackData: initialData }
   );
 
-  if (error) return <div>failed to load</div>;
-  if (!data && isLoading) return <div>loading...</div>;
+  if (error) return <Error message="Failed to load leaderboard" />;
+  if (!data && isLoading) return <Loading />;
 
   return (
     <>
+      <Navbar />
       <div className="px-4 sm:px-6 lg:px-8 p-6 max-w-full overflow-x-scroll">
         <h1 className="text-3xl mt-4 font-bold leading-6 text-center w-full">
-          The Leaderboard
+          Leaderboard
         </h1>
         <div className="mx-auto mt-4 flex justify-center max-w-full overflow-x-scroll">
           <div className="inline-block py-2 align-middle max-w-full overflow-x-scroll">
