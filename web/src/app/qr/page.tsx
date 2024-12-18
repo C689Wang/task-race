@@ -1,5 +1,8 @@
 'use client';
 import Navbar from '@/components/Navbar/Navbar';
+import Loading from '@/components/common/Loading';
+import Error from '@/components/common/Error';
+import Unauthorized from '@/components/common/Unauthorized';
 import React from 'react';
 import QRCode from 'react-qr-code';
 import useSWR from 'swr';
@@ -14,8 +17,10 @@ const QRPage = () => {
     { fallbackData: {} }
   );
 
-  if (error) return <div>failed to load</div>;
-  if (!data && isLoading) return <div>loading...</div>;
+  if (!user) return <Unauthorized />;
+
+  if (error) return <Error message="Failed to load QR code" />;
+  if (!data && isLoading) return <Loading />;
 
   return (
     <>

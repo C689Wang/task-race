@@ -1,4 +1,5 @@
 'use client';
+import Loading from '@/components/common/Loading';
 import LandingContainer from '@/components/Home/LandingContainer';
 import { useWebsocket } from '@/context/WebsocketContext';
 import { upload } from '@vercel/blob/client';
@@ -12,10 +13,10 @@ export default function Home() {
   const [isNewUser, setIsNewUser] = useState<boolean>(true);
   const webcamRef = useRef<Webcam>(null);
   const [image, setImage] = useState<string | null>(null);
+  const [submitLoading, setSubmitLoading] = useState<boolean>(false);
 
   const captureImage = useCallback(async () => {
     const imageSrc = webcamRef.current?.getScreenshot();
-    console.log(imageSrc);
     if (imageSrc) {
       setImage(imageSrc);
     }
@@ -26,6 +27,7 @@ export default function Home() {
   };
 
   const createUser = async (image: string) => {
+    setSubmitLoading(true);
     const base64Response = await fetch(image);
     const blob = await base64Response.blob();
     const profilePhoto = await upload(`profile-${nanoid()}.png`, blob, {
@@ -40,11 +42,12 @@ export default function Home() {
     });
     const userData = await userRaw.json();
     setUser(userData.id);
+    setSubmitLoading(false);
   };
 
   const { message, sendMessage, loading } = useWebsocket();
 
-  if (loading) return <div>Loading...</div>;
+  if (loading) return <Loading />;
 
   return (
     <LandingContainer
@@ -58,6 +61,7 @@ export default function Home() {
       createUser={createUser}
       message={message}
       sendMessage={sendMessage}
+      submitLoading={submitLoading}
     />
   );
 }

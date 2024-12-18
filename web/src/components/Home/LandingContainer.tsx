@@ -13,6 +13,7 @@ type HomeProps = {
   createUser: (image: string) => Promise<void>;
   sendMessage: (message: string) => void;
   message: string | undefined;
+  submitLoading: boolean;
 };
 
 const LandingContainer: React.FC<HomeProps> = ({
@@ -25,6 +26,7 @@ const LandingContainer: React.FC<HomeProps> = ({
   retakeImage,
   createUser,
   sendMessage,
+  submitLoading,
 }) => {
   return (
     <LandingComponent
@@ -37,6 +39,7 @@ const LandingContainer: React.FC<HomeProps> = ({
       retakeImage={retakeImage}
       createUser={createUser}
       sendMessage={sendMessage}
+      submitLoading={submitLoading}
     />
   );
 };

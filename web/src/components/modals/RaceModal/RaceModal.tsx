@@ -4,7 +4,6 @@ import React, { useCallback, useRef, useState } from 'react';
 import Webcam from 'react-webcam';
 
 interface RaceModalProps {
-  isOpen: boolean;
   onClose: () => void;
   view: 'Lobby' | 'Game';
   loading: boolean;
@@ -13,7 +12,6 @@ interface RaceModalProps {
 }
 
 const RaceModal: React.FC<RaceModalProps> = ({
-  isOpen,
   onClose,
   view,
   loading,
@@ -30,8 +28,6 @@ const RaceModal: React.FC<RaceModalProps> = ({
       setImage(imageSrc);
     }
   }, [webcamRef]);
-
-  if (!isOpen) return null;
 
   return (
     <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-70 z-50">
