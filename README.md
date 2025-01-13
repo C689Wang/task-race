@@ -1,5 +1,13 @@
 # task-race
 
+<img width="1015" alt="Screenshot 2025-01-13 at 1 38 51 PM" src="https://github.com/user-attachments/assets/6877960c-048f-4d28-925a-aa07bb065efe" />
+
+<img width="1394" alt="Screenshot 2025-01-13 at 1 41 52 PM" src="https://github.com/user-attachments/assets/02cba49f-d11e-4d92-b702-570f8c7c6871" />
+
+<img width="1402" alt="Screenshot 2025-01-13 at 1 42 15 PM" src="https://github.com/user-attachments/assets/98a7e0d4-2039-48cc-b581-a828e0622541" />
+
+<img width="1119" alt="Screenshot 2025-01-13 at 1 47 41 PM" src="https://github.com/user-attachments/assets/44525f3c-c207-4796-a1bc-713cb58d1c94" />
+
 Task Race is an interactive real-time photo challenge game where players compete against each other to complete photo-based tasks as quickly as possible. Players are given prompts to take specific selfies or photos, and the first to complete the challenge wins the race.
 
 ## Features
